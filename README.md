@@ -12,7 +12,7 @@ Real-time American Sign Language (ASL) gesture detection using a YOLOv8 model. T
 Train the model using:
 
 ```bash
-python model.py
+python model_train.py
 ```
 
 ## Testing
@@ -20,7 +20,7 @@ python model.py
 Test the trained model using:
 
 ```bash
-python test.py
+python model_test.py
 ```
 
 ## Video Detection
@@ -28,5 +28,5 @@ python test.py
 To detect sign language from video input, run:
 
 ```bash
-python detect.py
+python main.py
 ```

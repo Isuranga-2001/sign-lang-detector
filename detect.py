@@ -1,10 +1,10 @@
 import cv2
+import numpy as np
 from ultralytics import YOLO
+import time
 
-# Load your trained YOLO model (change path if needed)
-model = YOLO("model/v3/hand_sign_detector/weights/best.pt")
+model = YOLO("model/v2/hand_sign_detector/weights/best.pt")
 
-# Open webcam (0 = default camera)
 cap = cv2.VideoCapture(0)
 
 if not cap.isOpened():
@@ -12,25 +12,33 @@ if not cap.isOpened():
     exit()
 
 while True:
-    # Read a frame from the webcam
     ret, frame = cap.read()
     if not ret:
         print("Error: Failed to capture frame.")
         break
 
-    # Run YOLO detection on the frame
     results = model.predict(frame, imgsz=640, conf=0.5)
 
-    # Get annotated frame (YOLO automatically draws boxes + labels)
+    # Extract detected class names
+    detected_classes = []
+    for box in results[0].boxes:
+        cls_id = int(box.cls[0])
+        class_name = results[0].names[cls_id]
+        detected_classes.append(class_name)
+    # Only show the first detected class (if any)
+    detected_text = detected_classes[0] if detected_classes else ''
+
+    text_img = 255 * np.ones((100, 400, 3), dtype=np.uint8)
+    cv2.putText(text_img, detected_text, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 3)
+    cv2.imshow("Detected Classes", text_img)
+
     annotated_frame = results[0].plot()
 
-    # Show the frame
-    cv2.imshow("Hand Pose Detector", annotated_frame)
+    cv2.imshow("Sign Language Detector", annotated_frame)
 
-    # Exit when 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) == 27:  # Escape key
         break
+    time.sleep(0.1)
 
-# Release resources
 cap.release()
 cv2.destroyAllWindows()
