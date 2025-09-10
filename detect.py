@@ -2,7 +2,7 @@ import cv2
 from ultralytics import YOLO
 
 # Load your trained YOLO model (change path if needed)
-model = YOLO("model/v2/hand_sign_detector/weights/best.pt")
+model = YOLO("model/v3/hand_sign_detector/weights/best.pt")
 
 # Open webcam (0 = default camera)
 cap = cv2.VideoCapture(0)
