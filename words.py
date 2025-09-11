@@ -14,6 +14,8 @@ if not cap.isOpened():
 word = ''
 last_letter = ''
 letter_ready = True
+letter_start_time = 0
+min_detection_time = 0.5
 
 while True:
     ret, frame = cap.read()
@@ -23,26 +25,26 @@ while True:
 
     results = model.predict(frame, imgsz=640, conf=0.5)
 
-    # Extract detected class names
     detected_classes = []
     for box in results[0].boxes:
         cls_id = int(box.cls[0])
         class_name = results[0].names[cls_id]
         detected_classes.append(class_name)
-    # Only show the first detected class (if any)
     detected_text = detected_classes[0] if detected_classes else ''
 
-    # Only add letter if previous frame had no detection and current frame has a new letter
+    current_time = time.time()
     if detected_text:
-        if letter_ready and detected_text != last_letter:
-            word += detected_text
+        if detected_text != last_letter:
+            letter_start_time = current_time
             last_letter = detected_text
+        elif current_time - letter_start_time >= min_detection_time and letter_ready:
+            word += detected_text
             letter_ready = False
     else:
         last_letter = ''
         letter_ready = True
+        letter_start_time = 0
 
-    # Display current word
     word_img = 255 * np.ones((100, 400, 3), dtype=np.uint8)
     cv2.putText(word_img, word, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
     cv2.imshow("Current Word", word_img)
