@@ -3,7 +3,7 @@ import numpy as np
 from ultralytics import YOLO
 import time
 
-model = YOLO("model/v2/hand_sign_detector/weights/best.pt")
+model = YOLO("model/v3/hand_sign_detector/weights/best.pt")
 
 cap = cv2.VideoCapture(0)
 
