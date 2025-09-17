@@ -3,7 +3,7 @@ import numpy as np
 from ultralytics import YOLO
 import time
 
-model = YOLO("model/v2/hand_sign_detector/weights/best.pt")
+model = YOLO("model/v4/hand_sign_detector_v113/weights/best.pt")
 
 cap = cv2.VideoCapture(0)
 
@@ -19,13 +19,11 @@ while True:
 
     results = model.predict(frame, imgsz=640, conf=0.5)
 
-    # Extract detected class names
     detected_classes = []
     for box in results[0].boxes:
         cls_id = int(box.cls[0])
         class_name = results[0].names[cls_id]
         detected_classes.append(class_name)
-    # Only show the first detected class (if any)
     detected_text = detected_classes[0] if detected_classes else ''
 
     text_img = 255 * np.ones((100, 400, 3), dtype=np.uint8)
