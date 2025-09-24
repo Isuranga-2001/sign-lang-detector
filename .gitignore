@@ -1,6 +1,6 @@
 .idea/
 dist/
-venv/
+.venv/
 build/
 
 leapc-python-api/build
